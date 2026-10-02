@@ -19,15 +19,16 @@ def ping():
 
     # VULNERABILITE VOLONTAIRE POUR LE TP
     # Une entrée utilisateur est transmise directement au shell.
-    result = subprocess.run(
-        "ping -n 1 " + host,
-        shell=True,
-        capture_output=True,
-        text=True
+   result = subprocess.run(
+     "ping -n 1 " + host,
+     shell=True,
+     capture_output=True,
+     text=True
+)
     )
 
     return f"<pre>{result.stdout}</pre>"
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
