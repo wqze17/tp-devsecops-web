@@ -17,14 +17,12 @@ def home():
 def ping():
     host = request.args.get("host", "127.0.0.1")
 
-    # VULNERABILITE VOLONTAIRE POUR LE TP
-    # Une entrée utilisateur est transmise directement au shell.
-   result = subprocess.run(
-     "ping -n 1 " + host,
-     shell=True,
-     capture_output=True,
-     text=True
-)
+    # Correction : aucun shell n'interprète l'entrée utilisateur.
+    result = subprocess.run(
+        ["ping", "-n", "1", host],
+        shell=False,
+        capture_output=True,
+        text=True
     )
 
     return f"<pre>{result.stdout}</pre>"
