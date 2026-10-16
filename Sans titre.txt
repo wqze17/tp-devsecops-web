@@ -1,0 +1,53 @@
+
+import json
+import webbrowser
+import tkinter as tk
+from tkinter import messagebox
+from urllib.request import urlopen
+
+SERVEUR = "http://10.0.2.2:8000/commande"
+
+def executer(action):
+    print("Commande reçue :", action)
+
+    if action == "OPEN_URL":
+        webbrowser.open("https://www.python.org")
+
+    elif action == "SHOW_MESSAGE":
+        fenetre = tk.Tk()
+        fenetre.withdraw()
+        messagebox.showinfo(
+            "TP Virologie",
+            "Message reçu depuis le serveur Azure."
+        )
+        fenetre.destroy()
+
+    elif action == "SHUTDOWN":
+        fenetre = tk.Tk()
+        fenetre.withdraw()
+        confirmer = messagebox.askyesno(
+            "TP Virologie",
+            "Autoriser l'arrêt de cette VM Windows ?"
+        )
+        fenetre.destroy()
+
+        if confirmer:
+            import subprocess
+            subprocess.run(["shutdown", "/s", "/t", "30"])
+
+print("Client de laboratoire démarré.")
+
+while True:
+    try:
+        with urlopen(SERVEUR, timeout=5) as reponse:
+            action = json.load(reponse)["commande"]
+
+        if action != "NONE":
+            executer(action)
+
+    except Exception as erreur:
+        print("Connexion :", erreur)
+
+    choix = input("Entrée = interroger le serveur | Q = quitter : ")
+    if choix.strip().upper() == "Q":
+        break
